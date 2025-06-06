@@ -60,6 +60,17 @@ CFLAGS  = -O2 -fwrapv -fno-strict-aliasing
 CFLAGS += -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer
 CFLAGS += -ffile-prefix-map=$(CCACHE_BASEDIR)=.
 
+##
+## Try to add the initial patch manually
+##
+OPTIMIZE_FLAGS := $(CFLAGS) -mno-avx512f -mfpmath=sse
+SANITY_FLAGS   := -fwrapv -fno-strict-aliasing
+DEBUG_FLAGS    := -ffunction-sections -fdata-sections -fno-omit-frame-pointer
+COMMON_FLAGS    = $(DEBUG_FLAGS) -s $(OPTIMIZE_FLAGS) $(SANITY_FLAGS) -ffile-prefix-map=$(CCACHE_BASEDIR)=.
+COMMON_FLAGS32 := -mstackrealign
+COMMON_FLAGS64 := -mcmodel=small
+CARGO_BUILD_ARGS += --release
+
 ifneq ($(SUPPRESS_WARNINGS),)
 	CFLAGS += -w
 endif
